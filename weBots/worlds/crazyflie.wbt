@@ -1,0 +1,81 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/bitcraze/crazyflie/protos/Crazyflie.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/Floor.proto"
+
+WorldInfo {
+  info [
+    "Bitcraze's Crazyflie drone."
+    "This simulation allows you to pilot the drone with your keyboard."
+  ]
+  title "Crazyflie"
+}
+Viewpoint {
+  orientation 0.009581842594225499 0.996820549638242 -0.07910107528607008 0.24155974211288642
+  position -7.130657495534249 -1.369701491451819 1.7452335087021187
+  follow "floor"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+}
+DEF Crazyflie1 Crazyflie {
+  hidden linearVelocity_0 6.342729728258597e-05 0.0002454744436063141 0.02505781890554429
+  hidden angularVelocity_0 -0.016364897253285736 0.004228498090388577 -1.6407955520520082e-09
+  translation 0.40001752767851945 1.600068355144927 0.011773523557472765
+  rotation 0.9681765985771518 -0.2502580109643578 -0.0022364963089875683 0.002165139946247231
+  name "Crazyflie1"
+  controller "GroundBasedController"
+  extensionSlot [
+    Receiver {
+    }
+    Emitter {
+    }
+  ]
+}
+DEF Crazyflie2 Crazyflie {
+  hidden linearVelocity_0 0.00011248307399155536 1.5731092464622482e-05 0.025053929086657517
+  hidden angularVelocity_0 -0.0010487393029577237 0.007498870207274152 5.11789146858627e-16
+  translation 1.6000346091417434 0.10000453890022619 0.011773977536675405
+  rotation 0.13825872012445564 -0.9887973842042336 0.056251749309803194 0.0009711031899786205
+  name "Crazyflie2"
+  controller "GroundBasedController"
+  extensionSlot [
+    Receiver {
+    }
+    Emitter {
+    }
+  ]
+}
+DEF Crazyflie3 Crazyflie {
+  hidden linearVelocity_0 -0.00010396673079935902 -2.264848201202305e-05 0.02503905061479409
+  hidden angularVelocity_0 0.0015098983847347549 -0.006931113476575664 1.0594922683962416e-15
+  translation 0.4999673727156588 0.0999922754936105 0.011775880399633848
+  rotation -0.20686579241099454 0.9501052777774138 0.23346628251136084 0.0009341294513867495
+  name "Crazyflie3"
+  controller "GroundBasedController"
+  extensionSlot [
+    Receiver {
+    }
+    Emitter {
+    }
+  ]
+}
+DEF CrazyRadio Crazyflie {
+  hidden linearVelocity_0 -3.8072995931419336e-05 -3.769914083548277e-05 0.025056867609667043
+  hidden angularVelocity_0 0.002513273994688157 -0.002538197647310735 2.280736579396333e-16
+  translation 4.999989797815553 4.999989900209131 0.011773498539984783
+  rotation -0.7036094064638401 0.7105868418672426 -0.00037855084369296755 0.0004573215152600607
+  name "Crazyflie(3)"
+  controller "crazyRadio"
+  extensionSlot [
+    Receiver {
+    }
+    Emitter {
+    }
+  ]
+}
