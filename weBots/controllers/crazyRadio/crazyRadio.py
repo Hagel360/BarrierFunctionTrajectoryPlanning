@@ -13,7 +13,7 @@ from datetime import datetime
 
 COMMUNICATION_MODE = "crazyradio"
 ##COMMUNICATION_MODE = "peer_to_peer"
-LINSPACEPOINTS = 2
+LINSPACEPOINTS = 5
 
 # hola HOOP RING FOR DRONES TO FLY THROUGH
 # Parameters
@@ -33,7 +33,7 @@ hula_hoop = np.column_stack([x, y, z])
 # Shift the hula hoop to the starting position
 hula_hoop[:, 0] += 0
 hula_hoop[:, 1] += -1.5
-hula_hoop[:, 2] += 1
+hula_hoop[:, 2] += height
 
 
 # #plot the hula_hoop to verify its shape
@@ -61,6 +61,8 @@ if __name__ == "__main__":
     drone1_trajectory = np.array([])
     drone2_trajectory = np.array([])
     drone3_trajectory = np.array([])
+
+    print("Starting simulation")
 
     # pack testname and testpacket into a struct and send it
     # every time step, check if there are packets in the queue
@@ -118,7 +120,6 @@ if __name__ == "__main__":
                                 drone3_new_trajectory = new_points
                             else:
                                 drone3_new_trajectory = np.concatenate((drone3_new_trajectory, new_points))
-                        
                         # save the new trajectories in the respective arrays, so we can create a gif of the simulation later
                         drone1_gif_trajectory = np.array([drone1_new_trajectory])
                         drone2_gif_trajectory = np.array([drone2_new_trajectory])
@@ -144,12 +145,11 @@ if __name__ == "__main__":
                             drone3_gif_trajectory = np.append(drone3_gif_trajectory, [drone3_new_trajectory], axis=0)
                             
                         # send the new trajectories to the drones
-                        if COMMUNICATION_MODE == "crayradio":
+                        if COMMUNICATION_MODE == "crazyradio":
+                            print("Sending new trajectories to drones")
                             dongle.send_packet("Crazyflie1", "TRAJ", drone1_trajectory.tolist())
                             dongle.send_packet("Crazyflie2", "TRAJ", drone2_trajectory.tolist())
                             dongle.send_packet("Crazyflie3", "TRAJ", drone3_trajectory.tolist())
-                            all_trajectory_received = True
-                        else:
                             all_trajectory_received = True
 
         else:

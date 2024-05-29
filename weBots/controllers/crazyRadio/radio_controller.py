@@ -9,6 +9,7 @@ as the different modes are handled on the crazyradio side. (i.e. the crazyflies 
 from controller import Emitter
 from controller import Receiver
 import json
+import numpy as np
 
 class radio_controller:
     def __init__(self, robot):
@@ -20,7 +21,7 @@ class radio_controller:
 
     def send_packet(self, name, packettype, packet):
         # check if packet is a numpy array, convert to list
-        if type(packet) == type([]):
+        if type(packet) == type(np.array([])):
             packet = packet.tolist()
         packet_data = {
             'name': name,

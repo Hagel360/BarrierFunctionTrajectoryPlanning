@@ -7,6 +7,7 @@ from helper_functions.pid_controller import pid_velocity_fixed_height_controller
 from helper_functions.path_controller_class import PathController
 from helper_functions.drone_state import DroneState
 from helper_functions.radio_controller import radio_controller
+from helper_functions.peer_to_peer_class import PeerToPeerClass
 
 FLYING_ATTITUDE = 1
 # communication mode
@@ -20,6 +21,7 @@ class FlightController():
 		self.robot = Robot()
 		self.radio = radio_controller(self.robot)
 		self.name = self.robot.getName()
+		self.peertopeer = PeerToPeerClass(self.name)
 		self.droneState = DroneState.INACTIVE
 		self.timestep = int(self.robot.getBasicTimeStep())
 
@@ -63,11 +65,16 @@ class FlightController():
 		self.trajectory_index = 0
 
 		if self.name == "Crazyflie1":
-			self.waypoints = [[0.4,0.1, 0.0], [0.6,0.4, 0.3], [0.8,0.8, 0.8], [0.9, 1.2, 1.0], [0.8, 1.4, 1.5], [0.6, 1.7, 1.8]]
+			self.waypoints = [[0, 0, 1]]
 		if self.name == "Crazyflie2":
-			self.waypoints = [[1.6,0.1, 0.0], [1.4,0.4, 0.5], [1.2,0.8, 0.7], [1.0,1.2, 0.8], [0.9, 1.4, 1.2], [0.7, 1.7, 0.9]]
+			self.waypoints = [[0, 0, 1]]
 		if self.name == "Crazyflie3":
-			self.waypoints = [[0.5,0.1, 0.0], [0.7,0.3, 0.2], [0.8,0.6, 0.6], [1.0, 1.0, 1.1], [1.1, 0.6, 1.3], [1.4, 0.2, 0.7]]
+			self.waypoints = [[0, 0, 1]]
+
+		# crazyflie trajectories for swarm (peer to peer)
+		self.crazyflie1_trajectory = []
+		self.crazyflie2_trajectory = []
+		self.crazyflie3_trajectory = []
 
 		# Crazyflie velocity PID controller
 		self.PID_crazyflie = pid_velocity_fixed_height_controller()
@@ -128,8 +135,8 @@ class FlightController():
 			if self.robot.getTime() - self.sensor_read_last_time > 0.5:
 				position_packet = [x_global, y_global, altitude]
 				self.radio.send_packet(self.name, "POS", position_packet)
-				trajectory_packet = self.waypoints
-				self.radio.send_packet(self.name, "TRAJ", trajectory_packet)
+				# trajectory_packet = self.waypoints
+				# self.radio.send_packet(self.name, "TRAJ", trajectory_packet)
 
 				self.sensor_read_last_time = self.robot.getTime()
 
@@ -146,10 +153,20 @@ class FlightController():
 				
 				if COMMUNICATION_MODE == "peer_to_peer":
 					# when barrier function returns true, and a new trajcetory, start flying
-					#####################
-					# to be implemented #
-					#####################
-					pass
+					# add own trajectory
+					self.peertopeer.add_trajectory(self.name, self.waypoints)
+					if self.receiver.getQueueLength() > 0:
+						packet = self.radio.receive_packet()
+						# if not it's own trajectory, use peertopeer class to compute the barrier function
+						if packet[0] != self.name and packet[1] == "TRAJ":
+							self.peertopeer.add_trajectory(packet[0], packet[2])
+						# if all trajectories are received, compute the new trajectory
+						if self.peertopeer.has_all_trajectories():
+							print("All trajectories received")
+							# compute new trajectory
+							self.peertopeer.run()
+							self.waypoints = self.peertopeer.get_trajectory()
+							is_safe_to_fly = True
 				if COMMUNICATION_MODE == "crazyradio":
 					# when barrier function returns true, and a new trajcetory, start flying
 					if self.receiver.getQueueLength() > 0:
@@ -160,7 +177,7 @@ class FlightController():
 					else:
 						sleep(0.1)
 				if is_safe_to_fly:
-					print("Takeoff")
+					print("Flying")
 					self.droneState = DroneState.FLYING
 
 
