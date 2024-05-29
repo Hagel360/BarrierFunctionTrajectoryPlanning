@@ -8,5 +8,5 @@ In the barrierFunctions folder you will find the BarrierClass script, which is t
 ## Webots
 In the weBots folder, you will find the environment made for the Webots simulator. It consists of the world, protos used by Webots and controllers. The controllers folder contains to different communication protcol folders, a ground based and a peer-to-peer based protocol.
 
-In order to change the communication protocol in use for the drones, in the Webots environment, change the controller used by the drones.
+In order to change the communication protocol in use for the drones, change the controller in the Webots client.
 
